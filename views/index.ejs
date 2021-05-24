@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to <%= title %></p>
+  <div id="app">
+    <h1 v-on:click="test">{{ greeting }}</h1>
+  </div>
+</body>
+<script>
+  const app = {
+    data() {
+      return {
+        socket: io(),
+        greeting: 'Welcome to your Vue.js app!'
+      }
+    },
+    methods: {
+      test() {
+        alert('test');
+      }
+    },
+    mounted() {
+      this.socket.emit('test', 'coucou');
+        
+      this.socket.on('test', (msg) => {
+        console.log(msg);
+      });
+      
+    }
+  }
+
+  Vue.createApp(app).mount('#app')
+</script>
+</html>
