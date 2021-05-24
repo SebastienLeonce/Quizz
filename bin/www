@@ -7,7 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('quizz:server');
 var http = require('http');
-var socketapi = require("../socketapi");
+var socketapi = require("../socket");
 
 /**
  * Get port from environment and store in Express.
