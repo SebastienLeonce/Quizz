@@ -10,7 +10,7 @@
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-  <div id="app">
+  <div id="app" class="uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
     <div v-if="views.login"><%- include('login'); %></div>
   </div> 
 </body>
@@ -24,7 +24,8 @@
         password: '',
         views: {
           login: true,
-          signup: false
+          signup: false,
+          dashboard: false
         }
       }
     },
