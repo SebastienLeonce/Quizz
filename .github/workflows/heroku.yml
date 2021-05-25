@@ -10,7 +10,12 @@
      runs-on: ubuntu-latest
      if: ${{ github.event.workflow_run.conclusion == 'success' }}
      steps:
-       - run: echo "First workflow was a success"
+        - uses: actions/checkout@v2
+        - uses: CDNievas/heroku-action@v1.0
+          with:
+            heroku_email: "sebastienleonce91@gmail.com"
+            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+            heroku_app_name: "quiet-wildwood-78539"
 
    on-failure:
      runs-on: ubuntu-latest
