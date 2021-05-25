@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node -r dotenv/config ./bin/www"
+    "start": "node -r dotenv/config ./bin/www",
+    "test": "mocha"
   },
   "dependencies": {
     "browser-sync": "^2.26.14",
