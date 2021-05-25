@@ -28,12 +28,9 @@
       }
     },
     mounted() {
-      this.socket.emit('test', 'coucou');
-        
-      this.socket.on('test', (msg) => {
-        console.log(msg);
-      });
-      
+      this.socket.emit("hi", (arg) => {
+        console.log(arg);
+      });  
     }
   }
 

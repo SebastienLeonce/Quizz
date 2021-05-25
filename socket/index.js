@@ -1,6 +1,18 @@
 const io = require( "socket.io" )();
+const { instrument } = require("@socket.io/admin-ui");
+
 const socketapi = {
-    io: io
+    io: io,
+    options: {
+        cors: {
+          origin: ["https://admin.socket.io"]
+        }
+    },
+    instrument: (io) => {
+        instrument(io, {
+            auth: false
+        });
+    }
 };
 
 io.on( "connection", function( socket ) {

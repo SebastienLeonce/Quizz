@@ -7,6 +7,7 @@
     "test": "mocha"
   },
   "dependencies": {
+    "@socket.io/admin-ui": "^0.1.1",
     "browser-sync": "^2.26.14",
     "chai": "^4.3.4",
     "cookie-parser": "~1.4.4",
