@@ -3,37 +3,47 @@
 <head>
   <title><%= title %></title>
   <link rel='stylesheet' href='/stylesheets/style.css' />
-  <script src="https://unpkg.com/vue@next"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/css/uikit.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/js/uikit-icons.min.js"></script>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-  <h1><%= title %></h1>
-  <p>Welcome to <%= title %></p>
   <div id="app">
-    <h1 v-on:click="test">{{ greeting }}</h1>
-    <p><%= data %></p>
-  </div>
+    <div v-if="views.login"><%- include('login'); %></div>
+  </div> 
 </body>
 <script>
-  const app = {
+  new Vue({
+    el: '#app',
     data() {
       return {
         socket: io(),
-        greeting: 'Welcome to your Vue.js app!'
+        username: '',
+        password: '',
+        views: {
+          login: true,
+          signup: false
+        }
       }
     },
     methods: {
-      test() {
-        alert('test');
+      login(e) {
+        e.preventDefault();
+        this.socket.emit('login', this.username, this.password);
       }
     },
     mounted() {
-      this.socket.emit("hi", (arg) => {
-        console.log(arg);
-      });  
+      this.socket.on('error', (err) => {
+        UIkit.notification({
+          message: err,
+          status: 'danger',
+          pos: 'top-center',
+          timeout: 5000
+        });
+      });
     }
-  }
-
-  Vue.createApp(app).mount('#app')
+  });
 </script>
 </html>

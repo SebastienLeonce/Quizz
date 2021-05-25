@@ -1,0 +1,25 @@
+<div class="uk-card-small uk-card-default uk-width-1-2@m uk-align-center">
+    <div class="uk-card-header uk-text-center">
+        <h3 class="uk-card-title">Sign In</h3>
+    </div>
+    
+    <div class="uk-card-body">
+        <form>
+            <div class="uk-margin uk-text-center">
+                <div class="uk-inline uk-width-1-2">
+                    <span class="uk-form-icon" uk-icon="icon: user"></span>
+                    <input v-model="username" placeholder="username" class="uk-input" type="text">
+                </div>
+            </div>
+            
+            <div class="uk-margin uk-text-center">
+                <div class="uk-inline uk-width-1-2">
+                    <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                    <input v-model="password" placeholder="password" class="uk-input" type="password">
+                </div>
+            </div>
+            
+            <button v-on:click="login" class="uk-button uk-button-primary uk-align-center">Sign In</button>
+        </form>
+    </div>
+</div> 

@@ -23,6 +23,16 @@ io.on( "connection", function( socket ) {
     socket.on('hi', (cb) => {
         cb("hola");
     });
+
+    socket.on('login', (username, password) => {
+        if (!username) {
+            socket.emit("error", "Username invalid");
+        } else if (!password) {
+            socket.emit("error", "Password invalid");
+        } else {
+            console.log('success');
+        }
+    });
 });
 
 module.exports = socketapi;
