@@ -6,7 +6,7 @@ const db = require('../db');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   db.query('SELECT * FROM test_table', [], (err, data) => {
-    res.render('index', { title: 'Express', data: data.rows[0].name });
+    res.render('index', { title: 'Login', data: data.rows[0].name });
   });
 });
 
