@@ -4,11 +4,12 @@ const socketapi = {
 };
 
 io.on( "connection", function( socket ) {
-    console.log(`new connection ${socket.id}`);
-    socket.emit('test', 'coucou');
-    
-    socket.on('test', (msg) => {
-        console.log(msg);
+    socket.on("hello", (arg) => {
+        socket.emit("hello", arg);
+    });
+
+    socket.on('hi', (cb) => {
+        cb("hola");
     });
 });
 

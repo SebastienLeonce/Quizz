@@ -1,33 +1,19 @@
-// with { "type": "module" } in your package.json
-// import { createServer } from "http";
-// import { io as Client } from "socket.io-client";
-// import { Server } from "socket.io";
-// import { assert } from "chai";
-
-// with { "type": "commonjs" } in your package.json
-const { createServer } = require("http");
-const {Server} = require("socket.io");
 const Client = require("socket.io-client");
 const assert = require("chai").assert;
+const server = require("../bin/www");
 
 describe("my awesome project", () => {
-  let io, serverSocket, clientSocket;
+  let clientSocket;
 
   before((done) => {
-    const httpServer = createServer();
-    io = new Server(httpServer);
-    httpServer.listen(() => {
-      const port = httpServer.address().port;
-      clientSocket = new Client(`http://localhost:${port}`);
-      io.on("connection", (socket) => {
-        serverSocket = socket;
-      });
-      clientSocket.on("connect", done);
-    });
+    const port = server.address().port;
+
+    clientSocket = new Client(`http://localhost:${port}`);
+    clientSocket.on("connect", done);
+
   });
 
   after(() => {
-    io.close();
     clientSocket.close();
   });
 
@@ -36,13 +22,11 @@ describe("my awesome project", () => {
       assert.equal(arg, "world");
       done();
     });
-    serverSocket.emit("hello", "world");
+
+    clientSocket.emit("hello", "world");
   });
 
   it("should work (with ack)", (done) => {
-    serverSocket.on("hi", (cb) => {
-      cb("hola");
-    });
     clientSocket.emit("hi", (arg) => {
       assert.equal(arg, "hola");
       done();
