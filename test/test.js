@@ -15,6 +15,7 @@ describe("my awesome project", () => {
 
   after(() => {
     clientSocket.close();
+    server.close();
   });
 
   it("should work", (done) => {
