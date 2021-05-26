@@ -30,7 +30,7 @@ function defaultTask(cb) {
         }
     });
 
-    gulp.watch(["app.js", "./bin/www", "./routes/*.js", "./socket/*.js"], server);
+    gulp.watch(["app.js", "./bin/www", "./routes/*.js", "./socket/*.js", "./db/*.js"], server);
     gulp.watch(["views/**/*.ejs", "public/**/*.js"]).on('change', browserSync.reload);
     gulp.watch(["public/**/*.css"], css);
 

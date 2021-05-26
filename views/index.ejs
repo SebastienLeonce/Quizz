@@ -32,7 +32,15 @@
     methods: {
       login(e) {
         e.preventDefault();
-        this.socket.emit('login', this.username, this.password);
+        this.socket.emit('user:login', this.username, this.password, (err, res) => {
+          if (err) {
+            this.username = "";
+            this.password = "";
+          } else {
+            this.password = "";
+            alert(`welcome ${this.username}`);
+          }
+        });
       }
     },
     mounted() {

@@ -1,6 +1,8 @@
 const io = require( "socket.io" )();
 const { instrument } = require("@socket.io/admin-ui");
 
+const registerUserHandlers = require("./userHandler");
+
 const socketapi = {
     io: io,
     options: {
@@ -15,24 +17,10 @@ const socketapi = {
     }
 };
 
-io.on( "connection", function( socket ) {
-    socket.on("hello", (arg) => {
-        socket.emit("hello", arg);
-    });
-
-    socket.on('hi', (cb) => {
-        cb("hola");
-    });
-
-    socket.on('login', (username, password) => {
-        if (!username) {
-            socket.emit("error", "Username invalid");
-        } else if (!password) {
-            socket.emit("error", "Password invalid");
-        } else {
-            console.log('success');
-        }
-    });
-});
+const onConnection = (socket) => {
+    registerUserHandlers(io, socket);
+}
+  
+io.on("connection", onConnection);
 
 module.exports = socketapi;
