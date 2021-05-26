@@ -18,19 +18,9 @@ describe("my awesome project", () => {
     server.close();
   });
 
-  it("should work", (done) => {
-    clientSocket.on("hello", (arg) => {
-      assert.equal(arg, "world");
-      done();
-    });
-
-    clientSocket.emit("hello", "world");
-  });
-
-  it("should work (with ack)", (done) => {
-    clientSocket.emit("hi", (arg) => {
-      assert.equal(arg, "hola");
-      done();
+  it("user:login correct", (done) => {
+    clientSocket.emit("user:login", "john", "doe", (err, res) => {
+      if (!err) done();
     });
   });
 });
