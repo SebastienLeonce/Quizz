@@ -12,6 +12,7 @@
 <body>
   <div id="app" class="uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
     <div v-if="views.login"><%- include('login'); %></div>
+    <div v-else><%- include('dashboard'); %></div>
   </div> 
 </body>
 <script>
@@ -19,40 +20,58 @@
     el: '#app',
     data() {
       return {
-        socket: io(),
+        socket: io({ autoConnect: false }),
         username: '',
         password: '',
         views: {
           login: true,
-          signup: false,
-          dashboard: false
-        }
+        },
+        loginError: false,
       }
     },
     methods: {
       login(e) {
         e.preventDefault();
-        this.socket.emit('user:login', this.username, this.password, (err, res) => {
-          if (err) {
-            this.username = "";
-            this.password = "";
-          } else {
-            this.password = "";
-            alert(`welcome ${this.username}`);
-          }
-        });
+
+        this.socket.auth.username = this.username;
+        this.socket.auth.password = this.password;
+        this.password = "";
+        this.username = "";
+        this.socket.connect();
+      },
+      logout() {
+        localStorage.removeItem('sessionID');
+        this.socket.disconnect();
+        this.socket.auth = {};
+        this.views.login = true;
       }
     },
     mounted() {
-      this.socket.on('error', (err) => {
-        UIkit.notification({
-          message: err,
-          status: 'danger',
-          pos: 'top-center',
-          timeout: 5000
-        });
+      this.socket.auth = {};
+
+      this.socket.on("session", ({ sessionID, userID, username }) => {
+        this.socket.auth.sessionID = sessionID;
+        this.socket.userID = userID;
+        this.username = username;
+        this.views.login = false;
+        localStorage.setItem("sessionID", sessionID);
       });
-    }
+
+      const sessionID = localStorage.getItem("sessionID");
+      if (sessionID) {
+        this.socket.auth = { sessionID };
+        this.socket.connect();
+      }
+
+      this.socket.on("connect_error", (err) => {
+        console.log(err)
+        this.views.login = true;
+        this.loginError = true;
+      });
+    },
+    destroyed() {
+      socket.off("connect_error");
+    },
   });
 </script>
 </html>

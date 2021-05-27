@@ -4,13 +4,13 @@ const server = require("../bin/www");
 
 describe("my awesome project", () => {
   let clientSocket;
+  let clientSessionID;
 
-  before((done) => {
+  beforeEach((done) => {
     const port = server.address().port;
 
-    clientSocket = new Client(`http://localhost:${port}`);
-    clientSocket.on("connect", done);
-
+    clientSocket = new Client(`http://localhost:${port}`, { autoConnect: false });
+    done();
   });
 
   after(() => {
@@ -18,9 +18,80 @@ describe("my awesome project", () => {
     server.close();
   });
 
-  it("user:login correct", (done) => {
-    clientSocket.emit("user:login", "john", "doe", (err, res) => {
-      if (!err) done();
+  it("connect with username and password", (done) => {
+    clientSocket.on("session", ({sessionID}) => {
+      clientSessionID = sessionID;
+      clientSocket.close();
+      done();
     });
+
+    clientSocket.auth = {};
+    clientSocket.auth.username = "john";
+    clientSocket.auth.password = "doe";
+
+    clientSocket.connect();
+  });
+
+  it("check same sessionID", (done) => {
+    clientSocket.on("session", ({sessionID}) => {
+      assert.equal(clientSessionID, sessionID, "sessionID should be equal")
+      clientSocket.close();
+      done();
+    });
+
+    clientSocket.auth = {};
+    clientSocket.auth.username = "john";
+    clientSocket.auth.password = "doe";
+
+    clientSocket.connect();
+  });
+
+  it("connect with sessionID", (done) => {
+    clientSocket.on("session", () => {
+      clientSocket.close();
+      done();
+    });
+    clientSocket.auth = { sessionID: clientSessionID };
+    clientSocket.connect();
+  });
+
+  it("connect without password", (done) => {
+    clientSocket.on("connect_error", (err) => {
+      assert.equal(err.message, "invalid password");
+      clientSocket.close();
+      done();
+    });
+
+    clientSocket.auth = {};
+    clientSocket.auth.username = "john";
+
+    clientSocket.connect();
+  });
+
+  it("connect without username", (done) => {
+    clientSocket.on("connect_error", (err) => {
+      assert.equal(err.message, "invalid username");
+      clientSocket.close();
+      done();
+    });
+
+    clientSocket.auth = {};
+    clientSocket.auth.password = "john";
+
+    clientSocket.connect();
+  });
+
+  it("connect with wrong password", (done) => {
+    clientSocket.on("connect_error", (err) => {
+      assert.equal(err.message, "invalid user");
+      clientSocket.close();
+      done();
+    });
+
+    clientSocket.auth = {};
+    clientSocket.auth.username = "john";
+    clientSocket.auth.password = "eod";
+
+    clientSocket.connect();
   });
 });

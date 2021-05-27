@@ -5,16 +5,5 @@ module.exports = (io, socket) => {
       // ...
     }
   
-    const loginUser = (username, password, cb) => {
-      db.user.login(username, password, (err, res) => {
-        if (err) {
-          cb(err);
-        } else {
-          cb(err, res);
-        }
-      });
-    }
-  
     socket.on("user:create", createUser);
-    socket.on("user:login", loginUser);
   }
