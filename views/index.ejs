@@ -12,47 +12,19 @@
 <body>
   <div id="app" class="uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
     <div v-if="views.login">
-      <login 
+      <login-component 
         v-bind:socket="this.socket"
         v-bind:username="this.username" 
         @update-username="update">
-      </login>
+      </login-component>
     </div>
     <div v-else><%- include('dashboard'); %></div>
   </div> 
 </body>
+
+<%- include('components/login'); %>
+
 <script>
-  Vue.component('login', {
-    data: function () {
-      return {
-        password: '',
-        username_: this.username,
-        loginError: false,
-      }
-    },
-    methods: {
-      login(e) {
-        e.preventDefault();
-        this.socket.auth = {};
-
-        this.socket.auth.username = this.username;
-        this.socket.auth.password = this.password;
-        this.password = "";
-        this.socket.connect();
-      }
-    },
-    props: {
-      socket: Object,
-      username: String
-    },
-    watch:{
-      username_ (val) {
-        this.$emit("update-username", val);
-     }
-    },
-    template: `<%- include('login'); %>`
-  });
-
   new Vue({
     el: '#app',
     data() {

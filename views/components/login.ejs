@@ -1,0 +1,62 @@
+<template id="login-component">
+    <div class="uk-card-small uk-card-default uk-align-center">
+        <div class="uk-card-header uk-text-center">
+            <h3 class="uk-card-title uk-align-left">Sign In</h3>
+            <button class="uk-icon-button uk-button-primary uk-align-right" uk-icon="icon: pencil; ratio: 1.5">
+            </button>
+        </div>
+        
+        <div class="uk-card-body ">
+            <form>
+                <div class="uk-margin uk-text-center">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                        <input v-model="username_" placeholder="username" :class="['uk-input', loginError ? 'uk-form-danger' : '']" type="text">
+                    </div>
+                </div>
+                
+                <div class="uk-margin uk-text-center">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                        <input v-model="password" placeholder="password" :class="['uk-input', loginError ? 'uk-form-danger' : '']" type="password">
+                    </div>
+                </div>
+                
+                <button v-on:click="login" class="uk-button uk-button-primary uk-align-center">Sign In</button>
+            </form>
+        </div>
+    </div> 
+</template>    
+
+<script>
+    Vue.component('login-component', {
+        data: function () {
+            return {
+                password: '',
+                username_: this.username,
+                loginError: false,
+            }
+        },
+        methods: {
+            login(e) {
+                e.preventDefault();
+                this.socket.auth = {};
+
+                this.socket.auth.username = this.username;
+                this.socket.auth.password = this.password;
+                this.password = "";
+                this.socket.connect();
+            }
+        },
+        props: {
+            socket: Object,
+            username: String
+        },
+        watch:{
+            username_ (val) {
+                this.$emit("update-username", val);
+            }
+        },
+        template: document.getElementById('login-component').innerHTML
+    });
+</script>
