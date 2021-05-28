@@ -33,7 +33,10 @@ module.exports = (pool) => {
                 username, 
                 password
             ], (err, res) => {
-                if (!res.rows[0]) {
+                if (err) {
+                    console.log(err)
+                    cb(err)
+                } else if (!res.rows[0]) {
                     cb("Username or password invalid");
                 } else {
                     cb(err, res.rows[0]);
