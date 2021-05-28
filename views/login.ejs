@@ -1,14 +1,16 @@
 <div class="uk-card-small uk-card-default uk-align-center">
     <div class="uk-card-header uk-text-center">
-        <h3 class="uk-card-title">Sign In</h3>
+        <h3 class="uk-card-title uk-align-left">Sign In</h3>
+        <button class="uk-icon-button uk-button-primary uk-align-right" uk-icon="icon: pencil; ratio: 1.5">
+        </button>
     </div>
     
-    <div class="uk-card-body">
+    <div class="uk-card-body ">
         <form>
             <div class="uk-margin uk-text-center">
                 <div class="uk-inline">
                     <span class="uk-form-icon" uk-icon="icon: user"></span>
-                    <input v-model="username" placeholder="username" :class="['uk-input', loginError ? 'uk-form-danger' : '']" type="text">
+                    <input v-model="username_" placeholder="username" :class="['uk-input', loginError ? 'uk-form-danger' : '']" type="text">
                 </div>
             </div>
             

@@ -11,11 +11,48 @@
 </head>
 <body>
   <div id="app" class="uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
-    <div v-if="views.login"><%- include('login'); %></div>
+    <div v-if="views.login">
+      <login 
+        v-bind:socket="this.socket"
+        v-bind:username="this.username" 
+        @update-username="update">
+      </login>
+    </div>
     <div v-else><%- include('dashboard'); %></div>
   </div> 
 </body>
 <script>
+  Vue.component('login', {
+    data: function () {
+      return {
+        password: '',
+        username_: this.username,
+        loginError: false,
+      }
+    },
+    methods: {
+      login(e) {
+        e.preventDefault();
+        this.socket.auth = {};
+
+        this.socket.auth.username = this.username;
+        this.socket.auth.password = this.password;
+        this.password = "";
+        this.socket.connect();
+      }
+    },
+    props: {
+      socket: Object,
+      username: String
+    },
+    watch:{
+      username_ (val) {
+        this.$emit("update-username", val);
+     }
+    },
+    template: `<%- include('login'); %>`
+  });
+
   new Vue({
     el: '#app',
     data() {
@@ -30,21 +67,15 @@
       }
     },
     methods: {
-      login(e) {
-        e.preventDefault();
-
-        this.socket.auth.username = this.username;
-        this.socket.auth.password = this.password;
-        this.password = "";
-        this.username = "";
-        this.socket.connect();
-      },
       logout() {
         localStorage.removeItem('sessionID');
         this.socket.disconnect();
         this.socket.auth = {};
         this.views.login = true;
-      }
+      },
+      update(username) {
+        this.username = username;
+      },
     },
     mounted() {
       this.socket.auth = {};
