@@ -1,4 +1,4 @@
-<template id="login-component">
+<template id="<%= name %>">
     <div class="uk-card-small uk-card-default uk-align-center">
         <div class="uk-card-header uk-text-center">
             <h3 class="uk-card-title uk-align-left">Sign In</h3>
@@ -29,7 +29,7 @@
 </template>    
 
 <script>
-    Vue.component('login-component', {
+    Vue.component('<%= name %>', {
         data: function () {
             return {
                 password: '',
@@ -57,6 +57,6 @@
                 this.$emit("update-username", val);
             }
         },
-        template: document.getElementById('login-component').innerHTML
+        template: document.getElementById('<%= name %>').innerHTML
     });
 </script>
