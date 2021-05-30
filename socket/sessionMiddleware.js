@@ -25,17 +25,40 @@ module.exports = (sessionStore) => {
             return next(new Error("invalid password"));
         }
 
-        db.user.login(username, password, (err, res) => {
-            if (err) {
-                return next(new Error("invalid user"));
-            } else {
-                socket.sessionID = [...sessionStore.sessions.entries()]
-                    .filter((x) => x[1].userID == res.user_id)
-                    .map(([k]) => k)[0] || randomId();
-                socket.userID = res.user_id;
-                socket.username = username;
-                next();
-            }
-        });
+        if (socket.handshake.auth.signup) {
+            console.log("signup")
+            new db.user(username, password).save((err, res) => {
+                if (err) {
+                    return next(new Error(err));
+                } else {
+                    db.user.login(username, password, (err, res) => {
+                        if (err) {
+                            return next(new Error("invalid user"));
+                        } else {
+                            socket.sessionID = [...sessionStore.sessions.entries()]
+                                .filter((x) => x[1].userID == res.user_id)
+                                .map(([k]) => k)[0] || randomId();
+                            socket.userID = res.user_id;
+                            socket.username = username;
+                            return next();
+                        }
+                    });
+                }
+            });
+        } else {
+            console.log("login")
+            db.user.login(username, password, (err, res) => {
+                if (err) {
+                    return next(new Error("invalid user"));
+                } else {
+                    socket.sessionID = [...sessionStore.sessions.entries()]
+                        .filter((x) => x[1].userID == res.user_id)
+                        .map(([k]) => k)[0] || randomId();
+                    socket.userID = res.user_id;
+                    socket.username = username;
+                    return next();
+                }
+            });
+        }
     }
 }

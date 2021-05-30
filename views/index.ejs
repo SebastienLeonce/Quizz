@@ -35,7 +35,6 @@
         views: {
           login: true,
         },
-        loginError: false,
       }
     },
     methods: {
@@ -69,7 +68,6 @@
       this.socket.on("connect_error", (err) => {
         console.log(err)
         this.views.login = true;
-        this.loginError = true;
       });
     },
     destroyed() {

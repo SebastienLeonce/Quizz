@@ -1,8 +1,8 @@
 <template id="<%= name %>">
     <div class="uk-card-small uk-card-default uk-align-center">
         <div class="uk-card-header uk-text-center">
-            <h3 class="uk-card-title uk-align-left">Sign In</h3>
-            <button class="uk-icon-button uk-button-primary uk-align-right" uk-icon="icon: pencil; ratio: 1.5">
+            <h3 class="uk-card-title uk-align-left">{{ type }}</h3>
+            <button  v-on:click="changeType" class="uk-icon-button uk-button-primary uk-align-right" uk-icon="icon: pencil; ratio: 1.5">
             </button>
         </div>
         
@@ -11,18 +11,18 @@
                 <div class="uk-margin uk-text-center">
                     <div class="uk-inline">
                         <span class="uk-form-icon" uk-icon="icon: user"></span>
-                        <input v-model="username_" placeholder="username" :class="['uk-input', loginError ? 'uk-form-danger' : '']" type="text">
+                        <input v-model="username_" placeholder="username" class="uk-input" type="text">
                     </div>
                 </div>
                 
                 <div class="uk-margin uk-text-center">
                     <div class="uk-inline">
                         <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
-                        <input v-model="password" placeholder="password" :class="['uk-input', loginError ? 'uk-form-danger' : '']" type="password">
+                        <input v-model="password" placeholder="password" class="uk-input" type="password">
                     </div>
                 </div>
                 
-                <button v-on:click="login" class="uk-button uk-button-primary uk-align-center">Sign In</button>
+                <button v-on:click="login" class="uk-button uk-button-primary uk-align-center">{{ type }}</button>
             </form>
         </div>
     </div> 
@@ -34,7 +34,7 @@
             return {
                 password: '',
                 username_: this.username,
-                loginError: false,
+                type: 'Sign In'
             }
         },
         methods: {
@@ -42,10 +42,23 @@
                 e.preventDefault();
                 this.socket.auth = {};
 
+                if (this.type == "Sign Up") {
+                    this.socket.auth.signup = true;
+                }
+
                 this.socket.auth.username = this.username;
                 this.socket.auth.password = this.password;
-                this.password = "";
+                
                 this.socket.connect();
+
+                this.password = "";
+            },
+            changeType() {
+                if (this.type == "Sign In") {
+                    this.type = "Sign Up";
+                } else {
+                    this.type = "Sign In";
+                }
             }
         },
         props: {
