@@ -1,13 +1,13 @@
-const { Pool } = require('pg');
+const mongoose = require('mongoose');
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false
-    }
-});
+mongoose.connect(process.env.DATABASE_URL,
+  {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  }
+);
 
-const User = require('./User')(pool);
+const User = require('./User');
 
 module.exports = {
   user : User

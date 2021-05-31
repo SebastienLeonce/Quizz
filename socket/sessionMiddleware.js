@@ -26,7 +26,7 @@ module.exports = (sessionStore) => {
         }
 
         if (socket.handshake.auth.signup) {
-            new db.user(username, password).save((err, res) => {
+            new db.user(username, password, (err, res) => {
                 if (err) {
                     return next(new Error(err));
                 } else {
@@ -35,9 +35,9 @@ module.exports = (sessionStore) => {
                             return next(new Error("invalid user"));
                         } else {
                             socket.sessionID = [...sessionStore.sessions.entries()]
-                                .filter((x) => x[1].userID == res.user_id)
+                                .filter((x) => x[1].userID == res._id)
                                 .map(([k]) => k)[0] || randomId();
-                            socket.userID = res.user_id;
+                            socket.userID = res._id;
                             socket.username = username;
                             return next();
                         }
@@ -49,10 +49,11 @@ module.exports = (sessionStore) => {
                 if (err) {
                     return next(new Error("invalid user"));
                 } else {
+                    //TODO multiple session
                     socket.sessionID = [...sessionStore.sessions.entries()]
-                        .filter((x) => x[1].userID == res.user_id)
+                        .filter((x) => {x[1].username == res.username})
                         .map(([k]) => k)[0] || randomId();
-                    socket.userID = res.user_id;
+                    socket.userID = res._id;
                     socket.username = username;
                     return next();
                 }
