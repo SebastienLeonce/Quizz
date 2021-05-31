@@ -26,7 +26,6 @@ module.exports = (sessionStore) => {
         }
 
         if (socket.handshake.auth.signup) {
-            console.log("signup")
             new db.user(username, password).save((err, res) => {
                 if (err) {
                     return next(new Error(err));
@@ -46,7 +45,6 @@ module.exports = (sessionStore) => {
                 }
             });
         } else {
-            console.log("login")
             db.user.login(username, password, (err, res) => {
                 if (err) {
                     return next(new Error("invalid user"));
