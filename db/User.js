@@ -1,4 +1,4 @@
-const UserModel = require('./models/user.js');
+const UserModel = require('./models/User.js');
 
 module.exports = class User {        
     constructor(username, password, cb) {
