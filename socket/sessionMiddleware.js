@@ -35,7 +35,7 @@ module.exports = (sessionStore) => {
                             return next(new Error("invalid user"));
                         } else {
                             socket.sessionID = [...sessionStore.sessions.entries()]
-                                .filter((x) => x[1].userID == res._id)
+                                .filter((x) => x[1].username == res.username)
                                 .map(([k]) => k)[0] || randomId();
                             socket.userID = res._id;
                             socket.username = username;
@@ -46,12 +46,11 @@ module.exports = (sessionStore) => {
             });
         } else {
             db.user.login(username, password, (err, res) => {
-                if (err) {
+                if (err || !res) {
                     return next(new Error("invalid user"));
                 } else {
-                    //TODO multiple session
                     socket.sessionID = [...sessionStore.sessions.entries()]
-                        .filter((x) => {x[1].username == res.username})
+                        .filter((x) => x[1].username == res.username)
                         .map(([k]) => k)[0] || randomId();
                     socket.userID = res._id;
                     socket.username = username;

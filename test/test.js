@@ -2,7 +2,7 @@ const Client = require("socket.io-client");
 const assert = require("chai").assert;
 const server = require("../bin/www");
 
-describe("my awesome project", () => {
+describe("Quizz Project", () => {
   let clientSocket;
   let clientSessionID;
 
@@ -30,7 +30,7 @@ describe("my awesome project", () => {
     clientSocket.auth.password = "doe";
 
     clientSocket.connect();
-  });
+  }).timeout(5000);
 
   it("check same sessionID", (done) => {
     clientSocket.on("session", ({sessionID}) => {
@@ -44,7 +44,7 @@ describe("my awesome project", () => {
     clientSocket.auth.password = "doe";
 
     clientSocket.connect();
-  });
+  }).timeout(5000);
 
   it("connect with sessionID", (done) => {
     clientSocket.on("session", () => {
@@ -53,7 +53,7 @@ describe("my awesome project", () => {
     });
     clientSocket.auth = { sessionID: clientSessionID };
     clientSocket.connect();
-  });
+  }).timeout(5000);
 
   it("connect without password", (done) => {
     clientSocket.on("connect_error", (err) => {
@@ -66,7 +66,7 @@ describe("my awesome project", () => {
     clientSocket.auth.username = "john";
 
     clientSocket.connect();
-  });
+  }).timeout(5000);
 
   it("connect without username", (done) => {
     clientSocket.on("connect_error", (err) => {
@@ -79,7 +79,7 @@ describe("my awesome project", () => {
     clientSocket.auth.password = "john";
 
     clientSocket.connect();
-  });
+  }).timeout(5000);
 
   it("connect with wrong password", (done) => {
     clientSocket.on("connect_error", (err) => {
@@ -93,5 +93,5 @@ describe("my awesome project", () => {
     clientSocket.auth.password = "eod";
 
     clientSocket.connect();
-  });
+  }).timeout(5000);
 });

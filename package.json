@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node -r dotenv/config ./bin/www",
-    "test": "mocha -r dotenv/config"
+    "test": "mocha -r dotenv/config --exit"
   },
   "dependencies": {
     "@socket.io/admin-ui": "^0.1.1",
