@@ -41,16 +41,19 @@
             login(e) {
                 e.preventDefault();
                 this.socket.auth = {};
-
+                
                 if (this.type == "Sign Up") {
                     this.socket.auth.signup = true;
                 }
-
+                
+                console.log(this.views);
+                
                 this.socket.auth.username = this.username;
                 this.socket.auth.password = this.password;
+                this.socket.auth.views    = this.views
                 
                 this.socket.connect();
-
+                
                 this.password = "";
             },
             changeType() {
@@ -63,7 +66,8 @@
         },
         props: {
             socket: Object,
-            username: String
+            username: String,
+            views: Object
         },
         watch:{
             username_ (val) {

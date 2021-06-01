@@ -14,6 +14,7 @@ module.exports = (sessionStore) => {
                     .map(([k]) => k)[0] || randomId();
                 socket.userID = res._id;
                 socket.username = username;
+                socket.views = socket.handshake.auth.views;
                 return next();
             }
         });
@@ -37,6 +38,7 @@ module.exports = (sessionStore) => {
                 socket.sessionID = sessionID;
                 socket.userID = session.userID;
                 socket.username = session.username;
+                socket.views = session.views;
                 return next();
             }
         }

@@ -11,12 +11,17 @@ const onConnection = (socket) => {
         userID: socket.userID,
         username: socket.username,
         connected: true,
+        views: socket.views
     });
 
     socket.emit("session", {
         sessionID: socket.sessionID,
         userID: socket.userID,
         username: socket.username,
+        views: socket.views
+    });
+    socket.on("saveSession", (views) => {
+        socket.views = views
     });
 
     socket.join(socket.userID);
@@ -29,6 +34,7 @@ const onConnection = (socket) => {
             userID: socket.userID,
             username: socket.username,
             connected: false,
+            views: socket.views
           });
         }
     });

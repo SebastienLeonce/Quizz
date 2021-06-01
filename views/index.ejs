@@ -13,13 +13,14 @@
   <div id="app" class="uk-height-viewport uk-flex uk-flex-middle uk-flex-center">
     <div v-if="views.login">
       <login-component 
-        v-bind:socket="this.socket"
-        v-bind:username="this.username" 
-        @update-username="update">
-      </login-component>
-    </div>
-    <div v-else><%- include('dashboard'); %></div>
-  </div> 
+      v-bind:socket="this.socket"
+      v-bind:username="this.username" 
+      v-bind:views="this.views"
+      @update-username="update">
+    </login-component>
+  </div>
+  <div v-else><%- include('dashboard'); %></div>
+</div> 
 </body>
 
 <%- include('components/login', {name: 'login-component'}); %>
@@ -38,37 +39,46 @@
       }
     },
     methods: {
-      logout() {
-        localStorage.removeItem('sessionID');
-        this.socket.disconnect();
-        this.socket.auth = {};
-        this.views.login = true;
-      },
       update(username) {
         this.username = username;
       },
+      logout() {
+        this.views.login = true;
+        this.socket.emit('saveSession', this.views);
+        
+        localStorage.removeItem('sessionID');
+        
+        this.socket.disconnect();
+        this.socket.auth = {};
+      },
+      leaving() {
+        this.socket.emit('saveSession', this.views);
+      }
     },
     mounted() {
       this.socket.auth = {};
-
-      this.socket.on("session", ({ sessionID, userID, username }) => {
+      
+      this.socket.on("session", ({ sessionID, userID, username, views }) => {
         this.socket.auth.sessionID = sessionID;
         this.socket.userID = userID;
         this.username = username;
+        this.views = views;
         this.views.login = false;
         localStorage.setItem("sessionID", sessionID);
       });
-
+      
       const sessionID = localStorage.getItem("sessionID");
       if (sessionID) {
         this.socket.auth = { sessionID };
         this.socket.connect();
       }
-
+      
       this.socket.on("connect_error", (err) => {
         console.log(err)
         this.views.login = true;
       });
+      
+      window.addEventListener('beforeunload', this.leaving)
     },
     destroyed() {
       socket.off("connect_error");
