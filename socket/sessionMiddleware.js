@@ -4,10 +4,35 @@ const randomId = () => crypto.randomBytes(8).toString("hex");
 const db = require("../db");
 
 module.exports = (sessionStore) => {
+    const login = (username, password, socket, next) => {
+        db.user.login(username, password, (err, res) => {
+            if (err || !res) {
+                return next(new Error("invalid user"));
+            } else {
+                socket.sessionID = [...sessionStore.sessions.entries()]
+                    .filter((x) => x[1].username == res.username)
+                    .map(([k]) => k)[0] || randomId();
+                socket.userID = res._id;
+                socket.username = username;
+                return next();
+            }
+        });
+    }
+
+    const signup = (username, password, socket, next) => {
+        new db.user(username, password, (err, res) => {
+            if (err) {
+                return next(new Error(err));
+            } else {
+                return login(username, password, socket, next);
+            }
+        });
+    }
+
     return (socket, next) => {
         const sessionID = socket.handshake.auth.sessionID;
         if (sessionID) {
-        const session = sessionStore.findSession(sessionID);
+            const session = sessionStore.findSession(sessionID);
             if (session) {
                 socket.sessionID = sessionID;
                 socket.userID = session.userID;
@@ -26,37 +51,9 @@ module.exports = (sessionStore) => {
         }
 
         if (socket.handshake.auth.signup) {
-            new db.user(username, password, (err, res) => {
-                if (err) {
-                    return next(new Error(err));
-                } else {
-                    db.user.login(username, password, (err, res) => {
-                        if (err) {
-                            return next(new Error("invalid user"));
-                        } else {
-                            socket.sessionID = [...sessionStore.sessions.entries()]
-                                .filter((x) => x[1].username == res.username)
-                                .map(([k]) => k)[0] || randomId();
-                            socket.userID = res._id;
-                            socket.username = username;
-                            return next();
-                        }
-                    });
-                }
-            });
+            return signup(username, password, socket, next);
         } else {
-            db.user.login(username, password, (err, res) => {
-                if (err || !res) {
-                    return next(new Error("invalid user"));
-                } else {
-                    socket.sessionID = [...sessionStore.sessions.entries()]
-                        .filter((x) => x[1].username == res.username)
-                        .map(([k]) => k)[0] || randomId();
-                    socket.userID = res._id;
-                    socket.username = username;
-                    return next();
-                }
-            });
+            return login(username, password, socket, next);
         }
     }
 }
